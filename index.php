@@ -199,23 +199,23 @@ foreach($folder as $paths) {
                         </tbody>
                     </table>
                 </div>
-                <div class="content">
-                    <div class="has-text-centered has-text-success">
-                        <small>
-                            <i class="fa fa-exclamation-circle"></i> 
-                            Special note: All timezone are localized to <?= htmlentities(date_default_timezone_get()) ?>.
-                            <i class="fa fa-exclamation-circle"></i>
-                        </small>
-                    </div>
-                </div>
             </div>
         </section>
     </main>
 
     <footer class="footer">
         <div class="container">
-            <div class="content">
-                Indexed by <a href="https://github.com/chez14/capdex.php"><i class="fab fa-github"></i> Capdex.php</a>. Designed with <a href="https://bulma.io">Bulma CSS</a>.
+            <div class="columns">
+                <div class="column">
+                    <div class="content">
+                        Indexed by <a href="https://github.com/chez14/capdex.php"><i class="fab fa-github"></i> Capdex.php</a>. <b>Special note:</b> All timezone are localized to <b><?= htmlentities(date_default_timezone_get()) ?></b>.
+                    </div>
+                </div>
+                <div class="column has-text-right is-one-fifth">
+                    <div class="content">
+                        <a href="https://bulma.io"><img src="https://bulma.io/images/made-with-bulma.png" alt="Made with Bulma" width="128" height="24"></a>
+                    </div>
+                </div>
             </div>
         </div>
     </footer>
