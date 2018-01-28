@@ -4,7 +4,12 @@
  * Index all of your folder with ease.
  */
 
- 
+ /**
+  * Date time settings (according to your timezone)
+  */
+define('DATE_TIME_FORMAT', "D, j F Y - H:i:s");
+//date_default_timezone_set('Asia/Jakarta');
+
  /**
   * Show the folder link, instead of using the viewer link
   * if the directory have index file in it. (is recursively checked)
@@ -31,7 +36,13 @@ define('AUTODETECT_INDEX_FILELIST', [
     'index.py'
 ]);
 
-
+/**
+ * NOT ALLOWED FILE PATH (GLOBAL)
+ */
+define('NOT_ALLOWED_FOLDER', [
+    'cgi-bin',
+    'error_log'
+]);
 
 /**
  * END OF SETTINGS, YOU CAN ENJOY YOUR DAY NOW.
@@ -57,17 +68,28 @@ if(strpos($_GET['q'], './') || strpos($_GET['q'], '../' || $_GET['q'] == '.')){
 
     header('Location: ' . $location);
 }
-    
+
+$checked_path = [];
 function precheck($path){
-    if($path == '/' || $path == DIRECTORY_SEPARATOR)
+    global $checked_path;
+    if(key_exists($path, $checked_path))
+        return $checked_path[$path];
+
+    if($path == '/' || $path == DIRECTORY_SEPARATOR) {
+        $checked_path[$path] = true;
         return true;
-    if(is_file($path))
-        return precheck(dirname($path));
-    if(basename($path)[0] == "." || is_file($path . DIRECTORY_SEPARATOR . '.noindex'))
+    }
+
+    if(basename($path)[0] == "." || 
+        in_array(basename($path), NOT_ALLOWED_FOLDER) || 
+        is_file($path . DIRECTORY_SEPARATOR . '.noindex')) {
+        
+        $checked_path[$path] = false;
         return false;
-    if(strpos($path, DIRECTORY_SEPARATOR))
-        return true;
-    return precheck(dirname($path));
+    }
+
+    $checked_path[$path] = precheck(dirname($path));        
+    return $checked_path[$path];
 }
 
 function get_link($path) {
@@ -131,9 +153,6 @@ foreach($folder as $paths) {
         </div>
         <div class="hero-body">
             <div class="container">
-                <h1 class="title">
-                    <i>Fancy</i> Index For 
-                </h1>
                 <h2 class="subtitle">
                     /<?= htmlentities($_GET['q']?:'') ?>
                 </h2>
@@ -165,20 +184,29 @@ foreach($folder as $paths) {
                                     <tr>
                                         <td><i class="fa fa-folder"></i></td>
                                         <td><a href="<?= htmlentities(get_link($foldr)) ?>"><?= htmlentities($foldr) ?></a></td>
-                                        <td><?= filemtime($foldr) ?></td>
+                                        <td><?= date(DATE_TIME_FORMAT, filemtime($foldr)) ?></td>
                                         <td>-</td>
                                     </tr>
                                 <?php else: ?>
                                     <tr>
                                         <td><i class="fa fa-file"></i></td>
                                         <td><a href="<?= htmlentities(get_link($foldr)) ?>"><?= htmlentities($foldr) ?></a></td>
-                                        <td><?= filemtime($foldr) ?></td>
+                                        <td><?= date(DATE_TIME_FORMAT, filemtime($foldr)) ?></td>
                                         <td><?= filesize($foldr)?:0 ?> bytes</td>
                                     </tr>
                                 <?php endif; ?>
                             <?php endforeach; ?>
                         </tbody>
                     </table>
+                </div>
+                <div class="content">
+                    <div class="has-text-centered has-text-success">
+                        <small>
+                            <i class="fa fa-exclamation-circle"></i> 
+                            Special note: All timezone are localized to <?= htmlentities(date_default_timezone_get()) ?>.
+                            <i class="fa fa-exclamation-circle"></i>
+                        </small>
+                    </div>
                 </div>
             </div>
         </section>
