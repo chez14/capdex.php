@@ -135,7 +135,7 @@ foreach($folder as $paths) {
                 <div class="container">
                     <div class="navbar-brand">
                     <a class="navbar-item">
-                        Capdex
+                        <?= $_SERVER['HTTP_HOST'] ?>
                     </a>
                     <span class="navbar-burger burger" data-target="navbarMenuHeroA">
                         <span></span>
@@ -183,7 +183,7 @@ foreach($folder as $paths) {
                                 <?php if(is_dir($foldr)): ?>
                                     <tr>
                                         <td><i class="fa fa-folder"></i></td>
-                                        <td><a href="<?= htmlentities(get_link($foldr)) ?>"><?= htmlentities($foldr) ?></a></td>
+                                        <td><a href="<?= htmlentities(get_link($_GET['q'] . DIRECTORY_SEPARATOR . $foldr)) ?>"><?= htmlentities($foldr) ?></a></td>
                                         <td><?= date(DATE_TIME_FORMAT, filemtime($foldr)) ?></td>
                                         <td>-</td>
                                     </tr>
