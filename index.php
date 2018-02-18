@@ -93,7 +93,7 @@ function precheck($path){
 }
 
 function get_link($path) {
-    if(!is_dir($path))
+    if(!is_dir("./" . $path))
         return $path;
     
     if(AUTODETECT_INDEX)
@@ -106,7 +106,6 @@ function get_link($path) {
 }
 
 // note: $path are always the full path.
-//$_GET['q'] . DIRECTORY_SEPARATOR .
 $path = __DIR__;
 if($_GET['q'])
     $path .= DIRECTORY_SEPARATOR . $_GET['q'];
@@ -116,7 +115,7 @@ $folder = array_slice(scandir($path), 2);
 foreach($folder as $paths) {
     if(!precheck($path . DIRECTORY_SEPARATOR . $paths))
         continue;
-    $folders[] = $paths;
+    $folders[] = (!empty($_GET['q'])?$_GET['q'] . DIRECTORY_SEPARATOR . $foldr:"") . $paths;
 }
 
 ?><!DOCTYPE html>
@@ -172,17 +171,17 @@ foreach($folder as $paths) {
                             <?php 
                                 foreach($folders as $foldr):
                             ?>
-                                <?php if(is_dir($_GET['q'] . DIRECTORY_SEPARATOR . $foldr)): ?>
+                                <?php if(is_dir($foldr)): ?>
                                     <tr>
                                         <td><i class="fa fa-folder"></i></td>
-                                        <td><a href="<?= htmlentities(get_link($_GET['q'] . DIRECTORY_SEPARATOR . $foldr)) ?>"><?= htmlentities($foldr) ?></a></td>
+                                        <td><a href="<?= htmlentities(get_link($foldr)) ?>"><?= htmlentities(basename($foldr)) ?></a></td>
                                         <td><?= date(DATE_TIME_FORMAT, filemtime($foldr)) ?></td>
                                         <td>-</td>
                                     </tr>
                                 <?php else: ?>
                                     <tr>
                                         <td><i class="fa fa-file"></i></td>
-                                        <td><a href="<?= htmlentities(get_link($_GET['q'] . DIRECTORY_SEPARATOR . $foldr)) ?>"><?= htmlentities($foldr) ?></a></td>
+                                        <td><a href="<?= htmlentities(get_link($foldr)) ?>"><?= htmlentities(basename($foldr)) ?></a></td>
                                         <td><?= date(DATE_TIME_FORMAT, filemtime($foldr)) ?></td>
                                         <td><?= filesize($foldr)?:0 ?> bytes</td>
                                     </tr>
