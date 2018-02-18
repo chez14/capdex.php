@@ -102,10 +102,11 @@ function get_link($path) {
                 return $path;   
         }
     
-    return ltrim(INDEX_NAME . '?q=' . $_GET['q'] . $path);
+    return ltrim(INDEX_NAME . '?q=' . $path);
 }
 
 // note: $path are always the full path.
+//$_GET['q'] . DIRECTORY_SEPARATOR .
 $path = __DIR__;
 if($_GET['q'])
     $path .= DIRECTORY_SEPARATOR . $_GET['q'];
@@ -134,20 +135,9 @@ foreach($folder as $paths) {
             <nav class="navbar">
                 <div class="container">
                     <div class="navbar-brand">
-                    <a class="navbar-item">
+                    <a class="navbar-item" href="<?= htmlentities(INDEX_NAME) ?>">
                         <?= $_SERVER['HTTP_HOST'] ?>
                     </a>
-                    <span class="navbar-burger burger" data-target="navbarMenuHeroA">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </span>
-                    </div>
-                    <div id="navbarMenuHeroA" class="navbar-menu">
-                        <div class="navbar-end">
-                            <a class="navbar-item" href="<?= htmlentities(INDEX_NAME) ?>"> Home </a>
-                        </div>
-                    </div>
                 </div>
             </nav>
         </div>
@@ -179,8 +169,10 @@ foreach($folder as $paths) {
                                     (dirname($_GET['q'])=="."?"":dirname($_GET['q']))) ?>"><i>Go Up</i></a></td>
                             </tr>
                             <?php endif; ?>
-                            <?php foreach($folders as $foldr): ?>
-                                <?php if(is_dir($foldr)): ?>
+                            <?php 
+                                foreach($folders as $foldr):
+                            ?>
+                                <?php if(is_dir($_GET['q'] . DIRECTORY_SEPARATOR . $foldr)): ?>
                                     <tr>
                                         <td><i class="fa fa-folder"></i></td>
                                         <td><a href="<?= htmlentities(get_link($_GET['q'] . DIRECTORY_SEPARATOR . $foldr)) ?>"><?= htmlentities($foldr) ?></a></td>
@@ -190,7 +182,7 @@ foreach($folder as $paths) {
                                 <?php else: ?>
                                     <tr>
                                         <td><i class="fa fa-file"></i></td>
-                                        <td><a href="<?= htmlentities(get_link($foldr)) ?>"><?= htmlentities($foldr) ?></a></td>
+                                        <td><a href="<?= htmlentities(get_link($_GET['q'] . DIRECTORY_SEPARATOR . $foldr)) ?>"><?= htmlentities($foldr) ?></a></td>
                                         <td><?= date(DATE_TIME_FORMAT, filemtime($foldr)) ?></td>
                                         <td><?= filesize($foldr)?:0 ?> bytes</td>
                                     </tr>
